@@ -11,7 +11,7 @@ from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import BookingSerializer, MenuSerializer
-import rest_framework
+from rest_framework import generics, viewsets
 
 # Create your views here.
 def home(request):
@@ -96,10 +96,15 @@ class menuView(APIView):
                 serializer.save()
                 return Response({"status": "success", "data": serializer.data})
 
-class menuItemsView(rest_framework.generics.ListCreateView):
-    def get(self, request):
-        items = Menu.objects.all()
-        serializer = MenuSerializer(items, many=True)
+class menuItemsView(generics.ListCreateAPIView):
+    queryset = Menu.objects.all()
+    serializer_class = MenuSerializer
+
+    def get(self, request, pk=None):
+        item = Menu.objects.all()
+        print("yo yo yo")
+        print(item)
+        serializer = MenuSerializer(item, many=True)
         return Response(serializer.data)
 
     def post(self, request):
@@ -108,14 +113,27 @@ class menuItemsView(rest_framework.generics.ListCreateView):
                 serializer.save()
                 return Response({"status": "success", "data": serializer.data})
 
-class singleMenuItemView(rest_framework.generics.RetrieveUpdateAPIView, rest_framework.generics.DestroyAPIView):
-    def get(self, request):
-        items = Menu.objects.all()
-        serializer = MenuSerializer(items, many=True)
+class singleMenuItemView(generics.RetrieveUpdateAPIView, generics.DestroyAPIView):
+    serializer_class = MenuSerializer
+
+    def get(self, request, pk=None):
+        item = Menu.objects.get(pk=pk)
+        serializer = MenuSerializer(item, many=False)
         return Response(serializer.data)
 
-    def put(self, request):
-         return Response({"status": "muy bueno"})
+    def put(self, request, pk=None):
+        item = Menu.objects.get(pk=pk)
+        item.title = request.POST.get('title') or item.title
+        item.price = request.POST.get('price') or item.price
+        item.inventory = request.POST.get('inventory') or item.inventory
+        item.save()
+        return Response({"status": "put muy bueno"})
 
-    def delete(self, request):
-         return Response({"status": "muy bueno"})
+    def delete(self, request, pk=None):
+        item = Menu.objects.get(pk=pk)
+        item.delete()
+        return Response({"status": "delete muy bueno"})
+
+class BookingViewSet(viewsets.ModelViewSet):
+    queryset = Booking.objects.all()
+    serializer_class = BookingSerializer

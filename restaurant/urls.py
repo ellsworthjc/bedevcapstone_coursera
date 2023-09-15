@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
-from .views import menuView, bookingView, menuItemsView, singleMenuItemView
+from .views import menuView, bookingView, menuItemsView, singleMenuItemView, BookingViewSet
+from rest_framework import routers
 
 
 urlpatterns = [
@@ -13,5 +14,5 @@ urlpatterns = [
     # path('bookings', views.bookings, name='bookings'),
     path('booking/', bookingView.as_view()),
     path('menu/', menuItemsView.as_view()),
-    path('menu/', menuView.as_view()),
+    path('menu/<int:pk>', singleMenuItemView.as_view()),
 ]
