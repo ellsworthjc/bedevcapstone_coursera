@@ -71,7 +71,7 @@ def bookings(request):
 
     return HttpResponse(booking_json, content_type='application/json')
 
-# For final project
+# Final Project
 class bookingView(APIView):
     def get(self, request):
         items = Booking.objects.all()
