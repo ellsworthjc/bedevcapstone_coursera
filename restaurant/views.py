@@ -12,6 +12,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import BookingSerializer, MenuSerializer
 from rest_framework import generics, viewsets
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 def home(request):
@@ -135,5 +136,6 @@ class singleMenuItemView(generics.RetrieveUpdateAPIView, generics.DestroyAPIView
         return Response({"status": "delete muy bueno"})
 
 class BookingViewSet(viewsets.ModelViewSet):
-    queryset = Booking.objects.all()
-    serializer_class = BookingSerializer
+	permission_classes = [IsAuthenticated]
+	queryset = Booking.objects.all()
+	serializer_class = BookingSerializer
