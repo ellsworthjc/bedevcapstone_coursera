@@ -74,6 +74,7 @@ def bookings(request):
 
 # Final Project
 class bookingView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         items = Booking.objects.all()
         serializer = BookingSerializer(items, many=True)
@@ -86,6 +87,7 @@ class bookingView(APIView):
                 return Response({"status": "success", "data": serializer.data})
 
 class menuView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         items = Menu.objects.all()
         serializer = MenuSerializer(items, many=True)
@@ -98,6 +100,7 @@ class menuView(APIView):
                 return Response({"status": "success", "data": serializer.data})
 
 class menuItemsView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
 
@@ -115,6 +118,7 @@ class menuItemsView(generics.ListCreateAPIView):
                 return Response({"status": "success", "data": serializer.data})
 
 class singleMenuItemView(generics.RetrieveUpdateAPIView, generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = MenuSerializer
 
     def get(self, request, pk=None):
